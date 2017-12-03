@@ -1,0 +1,214 @@
+# proxy configuration
+proxy:
+    # enable proxy support - default false; set true otherwise
+    enable: true
+    host: 127.0.0.1
+    port: 8080
+    user: xxx
+    password: xxx
+    #auth - basic/digest
+    auth: digest
+#redis  configuration
+redis:
+    #host
+    host: '127.0.0.1'
+    # port
+    port: 6379
+    # queue-name for tracking redis jobs
+    queue_name: 'threat-feeds'
+# feed details
+feeds:
+    - name: malwaredomains
+      # type of feed - malware/spyware/botnet/ransomware/ssl abuser/scanning ip/bad ssl certificate
+      type: malware
+      # contains - ip/domain information
+      contains: ip
+      # download url
+      url: http://www.malwaredomainlist.com/hostslist/ip.txt
+      # custom tags
+      tag: malwaredomains
+      # enabled(true) / disabled (false) - default - false
+      enabled: true
+      # run every x secs (default 12 hours)
+      period: 1800
+      # description
+      description: This feed contains a list of IPs associated with malware
+      # csv: /home/psj/csv
+      # yaml: /home/psj/yaml
+      output:
+          - #type of file to write - csv,yaml,socket
+            type: csv
+            #full file path for csv file - e.g. /home/psj/feed_name.csv ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/malwaredomains.csv
+            enabled: true 
+          - #type of file to write - yaml
+            type: yaml
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/malwaredomains.yaml
+            enabled: true 
+          - #type of file to write - Bro CSV format
+            type: bro_csv
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/bro_malwaredomains.csv
+            enabled: true 
+          - # type elastic database
+            type: elastic
+            host: 127.0.0.1
+            port: 9200 
+            index: threats_database
+            doc_type: threats 
+            enabled: true 
+    - name: feodotracker_abuse_ch 
+      # type of feed - malware/spyware/botnet/ransomware/ssh bruteforce/scanning ip/ssl blacklist
+      type: botnet
+      # contains - ip/domain information
+      contains: ip
+      # download url
+      url: https://feodotracker.abuse.ch/blocklist/?download=ipblocklist
+      # custom tags
+      tag: feodo botnet
+      # enabled(true) / disabled(false) - default - false
+      enabled: true
+      # run every x secs (default 12 hours)
+      period: 1800 
+      # description:
+      description: Feodo Tracker offers ip blocklists that allows you to block Feodo botnet C&C traffic.
+      output:
+          - #type of file to write - csv,yaml,socket
+            type: csv
+            #full file path for csv file - e.g. /home/psj/feed_name.csv ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/feodotracker.csv
+            enabled: true
+          - #type of file to write - yaml
+            type: yaml
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/feodotracker.yaml
+            enabled: true
+          - #type of file to write - Bro CSV format
+            type: bro_csv
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/bro_feodotracker.csv
+            enabled: true 
+          - # type elastic database
+            type: elastic
+            host: 127.0.0.1
+            port: 9200 
+            index: threats_database
+            doc_type: threats
+            enabled: true
+    - name: zeustracker_abuse_ch 
+      # type of feed - malware/spyware/botnet/ransomware/ssh bruteforce/scanning ip/ssl blacklist
+      type: botnet
+      # contains - ip/domain information
+      contains: ip
+      # download url
+      url: https://zeustracker.abuse.ch/blocklist.php?download=ipblocklist
+      # custom tags
+      tag: zeus botnet
+      # enabled(true) / disabled(false) - default - false
+      enabled: true
+      # run every x secs (default 12 hours)
+      period: 1800 
+      # description:
+      description: Zeus Tracker offers ip blocklists that allows you to block Feodo botnet C&C traffic. 
+      output:
+          - #type of file to write - csv,yaml,socket
+            type: csv
+            #full file path for csv file - e.g. /home/psj/feed_name.csv ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/zeus.csv
+            enabled: true
+          - #type of file to write - yaml
+            type: yaml
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/zeus.yaml
+            enabled: true
+          - #type of file to write - Bro CSV format
+            type: bro_csv
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/bro_zeus.csv
+            enabled: true 
+          - # type elastic database
+            type: elastic
+            host: 127.0.0.1
+            port: 9200 
+            index: threats_database
+            doc_type: threats 
+            enabled: true 
+    - name: sslblacklist_abuse_ch 
+      # type of feed - malware/spyware/botnet/ransomware/ssh bruteforce/scanning ip/ssl blacklist
+      type: ssl blacklist
+      # contains - ip/domain information
+      contains: ip
+      # download url
+      url: https://sslbl.abuse.ch/blacklist/sslipblacklist.csv
+      # custom tags
+      tag: bad-ssl-certificate-ips
+      # enabled(true) / disabled(false) - default - false
+      enabled: true
+      # run every x secs (default 12 hours)
+      period: 1800 
+      # description:
+      description: Feed of IPs having bad ssl certificates. These IPs are being used for malware and malicious activities.
+      output:
+          - #type of file to write - csv,yaml,socket
+            type: csv
+            #full file path for csv file - e.g. /home/psj/feed_name.csv ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/ssl_blacklist.csv
+            enabled: true
+          - #type of file to write - yaml
+            type: yaml
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/ssl_blacklist.yaml
+            enabled: true
+          - #type of file to write - Bro CSV format
+            type: bro_csv
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/bro_ssl_blacklist.csv
+            enabled: true 
+          - # type elastic database
+            type: elastic
+            host: 127.0.0.1
+            port: 9200 
+            index: threats_database
+            doc_type: threats
+            enabled: true
+    - name: yoyo_adware
+      # type of feed - malware/spyware/botnet/ransomware/ssl abuser/scanning ip/bad ssl certificate
+      type: adware
+      # contains - ip/domain/url/hash information
+      contains: domain
+      # download url
+      url: https://pgl.yoyo.org/as/serverlist.php?showintro=0;hostformat=hosts
+      # custom tags
+      tag: adware-domains
+      # enabled(true) / disabled (false) - default - false
+      enabled: true
+      # run every x secs (default 12 hours)
+      period: 1800
+      # description
+      description: This feed contains a list of IPs associated with malware
+      # csv: /home/psj/csv
+      # yaml: /home/psj/yaml
+      output:
+          - #type of file to write - csv,yaml,socket
+            type: csv
+            #full file path for csv file - e.g. /home/psj/feed_name.csv ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/adwaredomains.csv
+            enabled: true 
+          - #type of file to write - yaml
+            type: yaml
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/adwaredomains.yaml
+            enabled: true 
+          - #type of file to write - Bro CSV format
+            type: bro_csv
+            #full file path for csv file - e.g. /home/psj/feed_name.yaml ( if no filename is given, feed_name will be asssumed as filename and file will be stored in current directory)
+            file_path: /home/psj/bro_adwaredomains.csv
+            enabled: true 
+          - # type elastic database
+            type: elastic
+            host: 127.0.0.1
+            port: 9200 
+            index: threats_database
+            doc_type: threats 
+            enabled: false 
